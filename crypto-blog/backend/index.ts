@@ -1,6 +1,5 @@
 const admin = require("firebase-admin");
-const recoverPersonalSignature = require ('@metamask/eth-sig-util');
-
+const ethSigUtil = require ('@metamask/eth-sig-util');
 const serviceAccount = require("./crypto-blog-firebase-adminsdk.json");
 
 admin.initializeApp({
@@ -57,15 +56,15 @@ app.get('/api/getNonceToSign/:address', async(request, response) => {
     }
 })
 
-app.post('/verifySignedMessage', async(request, response) => {
+app.get('/api/verifySignedMessage', async(request, response) => {
     try {
-
-      if (!request.params.address || !request.body.signature) {
+      console.log('request params', request.query);
+      if (!request.query.address || !request.query.signature) {
         return response.sendStatus(400);
       }
 
-      const address = request.params.address;
-      const sig = request.body.signature;
+      const address = request.query.address;
+      const sig = request.query.signature;
 
       // Get the nonce for this address
       const userDocRef = admin.firestore().collection('users').doc(address);
@@ -75,7 +74,7 @@ app.post('/verifySignedMessage', async(request, response) => {
         const existingNonce = userDoc.data()?.nonce;
 
         // Recover the address of the account used to create the given Ethereum signature.
-        const recoveredAddress = recoverPersonalSignature({
+        const recoveredAddress = ethSigUtil.recoverPersonalSignature({
           data: `0x${toHex(existingNonce)}`,
           signature: sig,
         });

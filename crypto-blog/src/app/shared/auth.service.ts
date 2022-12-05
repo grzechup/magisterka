@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Auth, signInWithCustomToken} from '@angular/fire/auth';
 import {from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
-import {switchMap} from "rxjs/operators";
+import {switchMap, tap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private auth: Auth) {}
+  constructor(private http: HttpClient, private auth: Auth) {
+  }
 
 
   public signInWithMetaMask() {
@@ -26,7 +27,7 @@ export class AuthService {
         ethereum = provider;
         console.log(ethereum);
 
-        return await ethereum.request({ method: 'eth_requestAccounts' });
+        return await ethereum.request({method: 'eth_requestAccounts'});
       }),
       // Step 2: Retrieve the current nonce for the requested address
       switchMap(() =>
@@ -46,17 +47,25 @@ export class AuthService {
           })
       ),
       // Step 4: If the signature is valid, retrieve a custom auth token for Firebase
-      switchMap((sig) =>
-        this.http.post<any>(
-          '/api/verifySignedMessage',
-          { address: ethereum.selectedAddress, signature: sig }
-        )
+      switchMap((sig) => {
+          let httpParams = new HttpParams();
+          httpParams = httpParams.set('address', ethereum.selectedAddress);
+          httpParams = httpParams.set('signature', sig);
+          return this.http.get<any>(
+            '/api/verifySignedMessage',
+            {params: httpParams}
+          )
+        }
       ),
       // Step 5: Use the auth token to auth with Firebase
       switchMap(
         async (response) =>
           await signInWithCustomToken(this.auth, response.token)
-      )
+      ),
+      tap(response => {
+        console.log('response of signing', response)
+      })
+
     );
   }
 
