@@ -4,19 +4,37 @@ import {Auth, signInWithCustomToken} from '@angular/fire/auth';
 import {from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
 import {switchMap, tap} from "rxjs/operators";
+import Web3 from "web3";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private auth: Auth) {
+
+  private _ethereum: any;
+  private _web3: Web3;
+  isLoggedIn = false;
+
+
+  get ethereum(){
+    return this._ethereum;
+  }
+
+  get web3(){
+    return this._web3;
+  }
+
+  constructor(private http: HttpClient,
+              private auth: Auth) {
+
+
   }
 
 
   public signInWithMetaMask() {
     console.log('signInWithMetaMask');
-    let ethereum: any;
 
     return from(detectEthereumProvider()).pipe(
       // Step 1: Request (limited) access to users ethereum account
@@ -24,32 +42,31 @@ export class AuthService {
         if (!provider) {
           throw new Error('Please install MetaMask');
         }
-        ethereum = provider;
-        console.log(ethereum);
-
-        return await ethereum.request({method: 'eth_requestAccounts'});
+        this._ethereum = provider;
+        console.log(this._ethereum);
+        return await this._ethereum.request({method: 'eth_requestAccounts'});
       }),
       // Step 2: Retrieve the current nonce for the requested address
       switchMap(() =>
         this.http.get<any>(
-          '/api/getNonceToSign/' + ethereum.selectedAddress
+          '/api/getNonceToSign/' + this._ethereum.selectedAddress
         )
       ),
       // Step 3: Get the user to sign the nonce with their private key
       switchMap(
         async (response) =>
-          await ethereum.request({
+          await this._ethereum.request({
             method: 'personal_sign',
             params: [
               `0x${this.toHex(response.nonce)}`,
-              ethereum.selectedAddress,
+              this._ethereum.selectedAddress,
             ],
           })
       ),
       // Step 4: If the signature is valid, retrieve a custom auth token for Firebase
       switchMap((sig) => {
           let httpParams = new HttpParams();
-          httpParams = httpParams.set('address', ethereum.selectedAddress);
+          httpParams = httpParams.set('address', this._ethereum.selectedAddress);
           httpParams = httpParams.set('signature', sig);
           return this.http.get<any>(
             '/api/verifySignedMessage',
@@ -63,6 +80,10 @@ export class AuthService {
           await signInWithCustomToken(this.auth, response.token)
       ),
       tap(response => {
+        this.isLoggedIn = true;
+        this._web3 = new Web3(this.ethereum);
+
+        this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => console.log('balance', balance));
         console.log('response of signing', response)
       })
 

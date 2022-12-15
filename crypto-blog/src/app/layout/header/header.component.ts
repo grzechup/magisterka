@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "src/app/shared/auth.service";
+import {Web3Service} from "src/app/shared/web3.service";
 
 @Component({
   selector: 'app-header',
@@ -8,12 +9,17 @@ import {AuthService} from "src/app/shared/auth.service";
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(public authService: AuthService,
+              public web3Service: Web3Service) {
+  }
 
   ngOnInit(): void {
   }
 
   signIn() {
-    this.authService.signInWithMetaMask().subscribe();
+    this.authService.signInWithMetaMask()
+      .subscribe(() => {
+        console.log('balance', this.web3Service.getAccountBalance());
+      });
   }
 }
