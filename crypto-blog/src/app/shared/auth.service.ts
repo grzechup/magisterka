@@ -5,6 +5,7 @@ import {from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
 import {switchMap, tap} from "rxjs/operators";
 import Web3 from "web3";
+import {WEI} from "src/app/shared/globals";
 
 
 @Injectable({
@@ -15,6 +16,8 @@ export class AuthService {
 
   private _ethereum: any;
   private _web3: Web3;
+  private _balance: number = 0;
+
   isLoggedIn = false;
 
 
@@ -24,6 +27,10 @@ export class AuthService {
 
   get web3(){
     return this._web3;
+  }
+
+  get balance(){
+    return this._balance;
   }
 
   constructor(private http: HttpClient,
@@ -83,7 +90,9 @@ export class AuthService {
         this.isLoggedIn = true;
         this._web3 = new Web3(this.ethereum);
 
-        this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => console.log('balance', balance));
+        this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
+          this._balance = <any> balance / WEI;
+        });
         console.log('response of signing', response)
       })
 
