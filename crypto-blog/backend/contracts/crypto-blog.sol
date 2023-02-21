@@ -1,5 +1,8 @@
 pragma solidity ^0.8.9;
 
+import "hardhat/console.sol";
+
+
 contract CryptoBlog {
 
   uint256 public articlesCount = 0;

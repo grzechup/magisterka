@@ -19,5 +19,9 @@
     "firebase-functions": "^3.14.1",
     "hardhat": "^2.12.5",
     "solc": "^0.8.17"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "hardhat": "^2.12.7"
   }
 }
