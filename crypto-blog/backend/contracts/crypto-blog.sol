@@ -24,7 +24,7 @@ contract CryptoBlog {
   //articleId -> Article
   mapping(uint256 => ArticleWithIpfsHash) private articlesMap;
 
-  mapping(address => Article[]) private articleOwners;
+  mapping(address => Article[]) public articleOwners;
 
   //articleId -> (address -> hasBought)
   mapping(uint256 => mapping(address => bool)) public articleBuyers;

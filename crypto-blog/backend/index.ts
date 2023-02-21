@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
 const ethSigUtil = require ('@metamask/eth-sig-util');
 const serviceAccount = require("./crypto-blog-firebase-adminsdk.json");
+const bodyParser = require("body-parser");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -10,7 +11,11 @@ admin.initializeApp({
 
 const express = require('express')
 const app = express()
+const router = express.Router();
 const port = 3000
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/test', async (request, response) => {
   return response.send('test');
@@ -114,6 +119,7 @@ const toHex = (stringToConvert) =>
     .join('');
 
 
+app.use("/", router);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
