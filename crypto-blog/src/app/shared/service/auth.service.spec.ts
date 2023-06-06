@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3Service } from './web3.service';
+import { AuthService } from 'src/app/shared/service/auth.service';
 
-describe('Web3Service', () => {
-  let service: Web3Service;
+describe('AuthService', () => {
+  let service: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Web3Service);
+    service = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {

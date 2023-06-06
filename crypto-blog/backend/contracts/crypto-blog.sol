@@ -11,7 +11,6 @@ contract CryptoBlog {
   struct Article {
     uint256 articleId;
     string title;
-    string teaser;
     uint256 price;
     uint publishTime;
     address owner;
@@ -36,42 +35,63 @@ contract CryptoBlog {
   }
 
 
-  function createNewArticle(string memory articleIpfsHash, uint256 price, string memory title, string memory teaser) public {
+  function createNewArticle(string memory articleIpfsHash, uint256 price, string memory title) public {
+    console.log("Create new article with title", title, "from address", msg.sender);
+    console.log("price", price, "hash", articleIpfsHash);
+
     require(bytes(articleIpfsHash).length > 0);
     require(price > 0);
     require(msg.sender != address(0));
 
-    Article memory article = Article(idSequence, title, teaser, price, block.timestamp, msg.sender);
+    Article memory article = Article(idSequence, title, price, block.timestamp, msg.sender);
     ArticleWithIpfsHash memory articleWithIpfsHash = ArticleWithIpfsHash(articleIpfsHash, article);
     articlesMap[articlesCount] = articleWithIpfsHash;
 
     articles.push(article);
 
     articleOwners[msg.sender].push(article);
+    console.log("article Owners", articleOwners[msg.sender].length);
 
     articlesCount++;
     idSequence++;
+    console.log("Created new article with id = ", idSequence);
   }
 
   function getOwnedArticles() public view returns (Article[] memory){
-    Article[] memory ret;
-    for (uint i = 0; i < articleOwners[msg.sender].length; i++) {
+    uint256 ownedArticlesLength = articleOwners[msg.sender].length;
+    console.log("Get owned articles for = ", msg.sender, "length", ownedArticlesLength);
+    Article[] memory ret = new Article[](ownedArticlesLength);
+    for (uint i = 0; i < ownedArticlesLength; i++) {
       ret[i] = articleOwners[msg.sender][i];
     }
     return ret;
   }
 
-  function getArticleTeasers() public view returns (Article[] memory) {
+  function getBoughtArticles() public view returns (Article[] memory){
+    uint256 ownedArticlesLength = articleOwners[msg.sender].length;
+    console.log("Get owned articles for = ", msg.sender, "length", ownedArticlesLength);
+    Article[] memory ret = new Article[](ownedArticlesLength);
+    for (uint i = 0; i < ownedArticlesLength; i++) {
+      ret[i] = articleOwners[msg.sender][i];
+    }
+    return ret;
+  }
+
+  function getArticles() public view returns (Article[] memory) {
     return articles;
   }
 
   function buyArticle(uint256 articleId) public payable {
+    uint256 articlePrice = articlesMap[articleId].article.price;
+
+    console.log("Buy article id", articleId, " from = ", msg.sender);
+    console.log("msg.value = ", msg.value, "article price = ", articlePrice);
+
     if (articleBuyers[articleId][msg.sender]) {
       revert("Article is already bought by this customer.");
     }
 
-    require(articlesMap[articleId].article.price > msg.value, 'Less sufficient amount.');
-    require(articlesMap[articleId].article.price < msg.value, 'More sufficient amount.');
+    require(articlePrice <= msg.value, 'Insufficient funds sent.');
 
     //address payable ownerAddress = articlesMap[articleId].article.owner;
     //ownerAddress.send(msg.value);
@@ -89,16 +109,4 @@ contract CryptoBlog {
       return toReturn;
     }
   }
-
-
-
-
-  /*  function storeFile(string memory fileContent) public {
-      bytes32 hash = ipfs.store(bytes(fileContent));
-      //Można zapisać hash na blockchainie, aby łatwiej było odnaleźć plik
-    }
-
-    function getFile(bytes32 hash) public view returns (string memory) {
-      return string(ipfs.retrieve(hash));
-    }*/
 }

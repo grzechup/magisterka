@@ -5,6 +5,8 @@ import {MainViewComponent} from "src/app/layout/main-view/main-view.component";
 import {PostViewComponent} from "src/app/layout/post-view/post-view.component";
 import {PostPreviewComponent} from "src/app/layout/post-preview/post-preview.component";
 import {RouterModule} from "@angular/router";
+import { PostCreateViewComponent } from './post-create-view/post-create-view.component';
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -12,7 +14,8 @@ import {RouterModule} from "@angular/router";
     HeaderComponent,
     MainViewComponent,
     PostViewComponent,
-    PostPreviewComponent
+    PostPreviewComponent,
+    PostCreateViewComponent
   ],
   exports: [
     HeaderComponent,
@@ -20,9 +23,10 @@ import {RouterModule} from "@angular/router";
     PostViewComponent,
     PostPreviewComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule
+    ]
 })
 export class LayoutModule { }

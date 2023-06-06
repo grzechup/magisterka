@@ -7,7 +7,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-
+require('dotenv').config();
 
 const express = require('express')
 const app = express()

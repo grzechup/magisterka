@@ -1,1 +1,9 @@
-<p>post-preview works!</p>
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{postPreview.title}}</h5>
+   <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>-->
+    <p class="card-text">{{postPreview.previewText}}</p>
+    <a href="#" class="card-link" [routerLink]="'post'" [queryParams]="{id: postPreview.postId}">View full article</a>
+  <!--  <a href="#" class="card-link">Another link</a>-->
+  </div>
+</div>

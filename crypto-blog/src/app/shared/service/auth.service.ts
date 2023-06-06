@@ -5,7 +5,7 @@ import {from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
 import {switchMap, tap} from "rxjs/operators";
 import Web3 from "web3";
-import {WEI} from "src/app/shared/globals";
+import {WEI} from "src/app/shared/util/globals";
 
 
 @Injectable({
@@ -25,6 +25,10 @@ export class AuthService {
     return this._ethereum;
   }
 
+  get address(){
+    return this._ethereum.selectedAddress;
+  }
+
   get web3(){
     return this._web3;
   }
@@ -41,10 +45,7 @@ export class AuthService {
 
 
   public signInWithMetaMask() {
-    console.log('signInWithMetaMask');
-
     return from(detectEthereumProvider()).pipe(
-      // Step 1: Request (limited) access to users ethereum account
       switchMap(async (provider) => {
         if (!provider) {
           throw new Error('Please install MetaMask');
@@ -53,13 +54,11 @@ export class AuthService {
         console.log(this._ethereum);
         return await this._ethereum.request({method: 'eth_requestAccounts'});
       }),
-      // Step 2: Retrieve the current nonce for the requested address
       switchMap(() =>
         this.http.get<any>(
           '/api/getNonceToSign/' + this._ethereum.selectedAddress
         )
       ),
-      // Step 3: Get the user to sign the nonce with their private key
       switchMap(
         async (response) =>
           await this._ethereum.request({
@@ -70,7 +69,6 @@ export class AuthService {
             ],
           })
       ),
-      // Step 4: If the signature is valid, retrieve a custom auth token for Firebase
       switchMap((sig) => {
           let httpParams = new HttpParams();
           httpParams = httpParams.set('address', this._ethereum.selectedAddress);
@@ -81,21 +79,18 @@ export class AuthService {
           )
         }
       ),
-      // Step 5: Use the auth token to auth with Firebase
       switchMap(
         async (response) =>
           await signInWithCustomToken(this.auth, response.token)
       ),
-      tap(response => {
+      tap(() => {
         this.isLoggedIn = true;
         this._web3 = new Web3(this.ethereum);
 
         this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
           this._balance = <any> balance / WEI;
         });
-        console.log('response of signing', response)
       })
-
     );
   }
 

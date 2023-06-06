@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PostsService } from 'src/app/shared/service/posts.service';
+import {PostPreviewData} from "src/app/shared/model/post-preview-data";
 
 @Component({
   selector: 'app-main-view',
@@ -7,7 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainViewComponent implements OnInit {
 
-  constructor() { }
+  postPreview: PostPreviewData = {
+    postId: 1,
+    title: "article title",
+    previewText: "preview example text"
+  };
+
+  constructor(private postsService: PostsService) { }
 
   ngOnInit(): void {
   }
