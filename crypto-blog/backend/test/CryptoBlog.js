@@ -32,6 +32,7 @@ describe("CryptoBlog", function () {
 
       await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash123", price, "title123");
       await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1234", price, "title1234");
+      await cryptoBlogDeploy.connect(otherAccount2).createNewArticle("hash1235", price, "title1235");
 
       const ownedArticles = await cryptoBlogDeploy.connect(otherAccount).getOwnedArticles();
       const articles = await cryptoBlogDeploy.getArticles();
@@ -43,9 +44,10 @@ describe("CryptoBlog", function () {
       expect(ownedArticles.length).to.equal(2)
       expect(ownedArticles[0].title).to.equal("title123")
       expect(ownedArticles[1].title).to.equal("title1234")
-      expect(articles.length).to.equal(2)
+      expect(articles.length).to.equal(3)
       expect(articles[0].title).to.equal("title123")
       expect(articles[1].title).to.equal("title1234")
+      expect(articles[2].title).to.equal("title1235")
     });
 
     it("Buy articles", async function () {
