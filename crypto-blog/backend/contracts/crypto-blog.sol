@@ -38,7 +38,7 @@ contract CryptoBlog {
 
     Article memory article = Article(idSequence, title, price, block.timestamp, payable(msg.sender));
     ArticleWithIpfsHash memory articleWithIpfsHash = ArticleWithIpfsHash(articleIpfsHash, article);
-    articlesMap[idSequence] = articleWithIpfsHash; //Changed articlesCount to idSequence to match with articleId
+    articlesMap[idSequence] = articleWithIpfsHash;
     articles.push(article);
     articleOwners[msg.sender].push(article);
 

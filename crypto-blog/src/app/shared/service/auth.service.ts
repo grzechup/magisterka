@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Auth, signInWithCustomToken} from '@angular/fire/auth';
 import {from} from "rxjs";
@@ -11,7 +11,7 @@ import {WEI} from "src/app/shared/util/globals";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService{
 
 
   private _ethereum: any;
@@ -39,8 +39,6 @@ export class AuthService {
 
   constructor(private http: HttpClient,
               private auth: Auth) {
-
-
   }
 
 
@@ -90,6 +88,7 @@ export class AuthService {
         this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
           this._balance = <any> balance / WEI;
         });
+        sessionStorage.setItem('ethereum', JSON.stringify(this._ethereum));
       })
     );
   }
@@ -100,5 +99,7 @@ export class AuthService {
       .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
       .join('');
   }
+
+
 
 }

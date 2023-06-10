@@ -14,15 +14,19 @@
 
 .nav-link {
   display: inline-block;
-  width: 100px;
   height: 55px;
-
   color: White;
-
+  padding-left:10px;
+  padding-right:10px;
   text-align: center;
   line-height: 55px;
 
   text-decoration: none;
+}
+
+.nav-link:hover {
+  background-color: #2a5e5f;
+  cursor: pointer;
 }
 
 #logo {

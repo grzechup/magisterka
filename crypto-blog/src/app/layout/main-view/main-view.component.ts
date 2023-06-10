@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PostsService } from 'src/app/shared/service/posts.service';
+import { IpfsService } from 'src/app/shared/service/ipfs.service';
 import {PostPreviewData} from "src/app/shared/model/post-preview-data";
 
 @Component({
@@ -15,7 +15,7 @@ export class MainViewComponent implements OnInit {
     previewText: "preview example text"
   };
 
-  constructor(private postsService: PostsService) { }
+  constructor(private postsService: IpfsService) { }
 
   ngOnInit(): void {
   }

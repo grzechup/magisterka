@@ -1,7 +1,16 @@
-<textarea
-  [(ngModel)]="text"
+<div class="container">
+  <div class="form">
+    <label for="title">Title</label>
+    <input id="title" [(ngModel)]="title" >
 
-  style="width:-moz-available; height: 500px;"
-></textarea>
-
-<button (click)="createArticle()">Create article</button>
+    <label for="text">Text</label>
+    <textarea
+      id="text"
+      class="textarea"
+      [(ngModel)]="text">
+    </textarea>
+    <label for="price">Set price</label>
+    <input id="price" [(ngModel)]="price" >
+    <button (click)="createArticle()">Create article</button>
+  </div>
+</div>

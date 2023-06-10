@@ -26,6 +26,7 @@ describe("CryptoBlog", function () {
   }
 
   describe("Deployment", function () {
+
     it("Create new articles and check ownership", async function () {
       const {cryptoBlogDeploy, owner, otherAccount, otherAccount2} = await loadFixture(deployContract);
       let price = ethers.utils.parseUnits("0.01", "ether");
