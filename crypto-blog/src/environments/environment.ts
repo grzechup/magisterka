@@ -15,6 +15,12 @@ export const environment = {
 
   },
 
+  ipfsConfig: {
+    HOST: '127.0.0.1',
+    PORT: 5001,
+    PROTOCOL: 'http'
+  },
+
   contractAddress: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
   abi: [
     {

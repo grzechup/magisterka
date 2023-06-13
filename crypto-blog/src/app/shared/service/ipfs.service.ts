@@ -1,6 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {create} from 'ipfs-http-client'
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +10,9 @@ export class IpfsService implements OnInit {
 
   ipfs: any;
 
-  private static readonly HOST = '127.0.0.1';
-  private static readonly PORT = 5001;
-  private static readonly PROTOCOL = 'http';
+  private static readonly HOST = environment.ipfsConfig.HOST;
+  private static readonly PORT = environment.ipfsConfig.PORT;
+  private static readonly PROTOCOL = environment.ipfsConfig.PROTOCOL;
 
 
   constructor() {
