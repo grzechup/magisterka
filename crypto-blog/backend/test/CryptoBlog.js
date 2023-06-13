@@ -31,9 +31,9 @@ describe("CryptoBlog", function () {
       const {cryptoBlogDeploy, owner, otherAccount, otherAccount2} = await loadFixture(deployContract);
       let price = ethers.utils.parseUnits("0.01", "ether");
 
-      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash123", price, "title123");
-      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1234", price, "title1234");
-      await cryptoBlogDeploy.connect(otherAccount2).createNewArticle("hash1235", price, "title1235");
+      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash123", "previewHash123", price, "title123");
+      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1234", "previewHash1234", price, "title1234");
+      await cryptoBlogDeploy.connect(otherAccount2).createNewArticle("hash1235", "previewHash1235", price, "title1235");
 
       const ownedArticles = await cryptoBlogDeploy.connect(otherAccount).getOwnedArticles();
       const articles = await cryptoBlogDeploy.getArticles();
@@ -55,9 +55,9 @@ describe("CryptoBlog", function () {
       const {cryptoBlogDeploy, owner, otherAccount, otherAccount2} = await loadFixture(deployContract);
       let price = ethers.utils.parseUnits("0.01", "ether");
 
-      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash123", price, "title123");
-      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1234", price, "title1234");
-      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1235", price, "title1235");
+      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash123", "previewHash123", price, "title123");
+      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1234", "previewHash1234", price, "title1234");
+      await cryptoBlogDeploy.connect(otherAccount).createNewArticle("hash1235", "previewHash1235", price, "title1235");
 
       await cryptoBlogDeploy.connect(otherAccount2).buyArticle(1, {value: price});
       await cryptoBlogDeploy.connect(otherAccount2).buyArticle(2, {value: price});

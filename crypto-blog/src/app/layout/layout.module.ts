@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {HeaderComponent} from "src/app/layout/header/header.component";
 import {MainViewComponent} from "src/app/layout/main-view/main-view.component";
 import {PostViewComponent} from "src/app/layout/post-view/post-view.component";
-import {PostPreviewComponent} from "src/app/layout/post-preview/post-preview.component";
+import {ArticlePreviewComponent} from "src/app/layout/post-preview/article-preview.component";
 import {RouterModule} from "@angular/router";
 import { PostCreateViewComponent } from './post-create-view/post-create-view.component';
 import {FormsModule} from "@angular/forms";
@@ -14,14 +14,14 @@ import {FormsModule} from "@angular/forms";
     HeaderComponent,
     MainViewComponent,
     PostViewComponent,
-    PostPreviewComponent,
+    ArticlePreviewComponent,
     PostCreateViewComponent
   ],
   exports: [
     HeaderComponent,
     MainViewComponent,
     PostViewComponent,
-    PostPreviewComponent
+    ArticlePreviewComponent
   ],
     imports: [
         CommonModule,

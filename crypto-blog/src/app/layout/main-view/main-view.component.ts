@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IpfsService } from 'src/app/shared/service/ipfs.service';
-import {PostPreviewData} from "src/app/shared/model/post-preview-data";
+import {ArticlePreviewData} from "src/app/shared/model/article-preview-data";
+import {ArticleService} from "../../shared/service/article.service";
 
 @Component({
   selector: 'app-main-view',
@@ -9,15 +9,13 @@ import {PostPreviewData} from "src/app/shared/model/post-preview-data";
 })
 export class MainViewComponent implements OnInit {
 
-  postPreview: PostPreviewData = {
-    postId: 1,
-    title: "article title",
-    previewText: "preview example text"
-  };
+  articles: ArticlePreviewData[] = [];
 
-  constructor(private postsService: IpfsService) { }
+  constructor(private articleService: ArticleService) { }
 
   ngOnInit(): void {
+    this.articleService.getArticles()
+      .then(result => this.articles = result);
   }
 
 }

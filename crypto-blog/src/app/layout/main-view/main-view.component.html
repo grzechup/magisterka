@@ -1,6 +1,5 @@
 <div class="grid-container">
-  <app-post-preview class="grid-item" [postPreview]="postPreview" ></app-post-preview>
-  <app-post-preview class="grid-item" [postPreview]="postPreview"></app-post-preview>
-  <app-post-preview class="grid-item" [postPreview]="postPreview"></app-post-preview>
-  <app-post-preview class="grid-item" [postPreview]="postPreview"></app-post-preview>
+  <app-post-preview class="grid-item"
+                    *ngFor="let article of articles"
+                    [articlePreview]="article" ></app-post-preview>
 </div>

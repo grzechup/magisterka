@@ -12,6 +12,7 @@ contract CryptoBlog {
     uint256 price;
     uint publishTime;
     address payable owner;
+    string previewContentIpfsHash;
   }
 
   struct ArticleWithIpfsHash {
@@ -28,15 +29,16 @@ contract CryptoBlog {
 
   constructor() {}
 
-  function createNewArticle(string memory articleIpfsHash, uint256 price, string memory title) public {
+  function createNewArticle(string memory articleIpfsHash, string memory previewArticleIpfsHash, uint256 price, string memory title) public {
     console.log("[Contract] Create new article with title", title, "from address", msg.sender);
     console.log("[Contract] price", price, "hash", articleIpfsHash);
 
     require(bytes(articleIpfsHash).length > 0);
+    require(bytes(previewArticleIpfsHash).length > 0);
     require(price > 0);
     require(msg.sender != address(0));
 
-    Article memory article = Article(idSequence, title, price, block.timestamp, payable(msg.sender));
+    Article memory article = Article(idSequence, title, price, block.timestamp, payable(msg.sender), previewArticleIpfsHash);
     ArticleWithIpfsHash memory articleWithIpfsHash = ArticleWithIpfsHash(articleIpfsHash, article);
     articlesMap[idSequence] = articleWithIpfsHash;
     articles.push(article);

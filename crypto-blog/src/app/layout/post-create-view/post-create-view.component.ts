@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "src/app/shared/service/auth.service";
 import {Web3Service} from "src/app/shared/service/web3.service";
 import {IpfsService} from "src/app/shared/service/ipfs.service";
+import {ArticleService} from "../../shared/service/article.service";
 
 @Component({
   selector: 'app-post-create-view',
@@ -15,6 +16,7 @@ export class PostCreateViewComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private web3Service: Web3Service,
+              private articleService: ArticleService,
               private postService: IpfsService) { }
 
   ngOnInit(): void {
@@ -23,6 +25,6 @@ export class PostCreateViewComponent implements OnInit {
 
   createArticle() {
     console.log('address', this.authService.address)
-    this.postService.onTextSubmit(this.title, this.text, this.price);
+    this.articleService.createNewArticle(this.title, this.text, this.price);
   }
 }

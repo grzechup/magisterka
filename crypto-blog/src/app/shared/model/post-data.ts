@@ -1,6 +1,6 @@
-import {PostPreviewData} from "src/app/shared/model/post-preview-data";
+import {ArticlePreviewData} from "src/app/shared/model/article-preview-data";
 
-export interface PostData extends PostPreviewData{
+export interface PostData extends ArticlePreviewData{
 
   fullText: string;
   authorAddress: string;

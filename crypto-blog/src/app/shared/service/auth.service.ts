@@ -88,7 +88,6 @@ export class AuthService{
         this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
           this._balance = <any> balance / WEI;
         });
-        sessionStorage.setItem('ethereum', JSON.stringify(this._ethereum));
       })
     );
   }
