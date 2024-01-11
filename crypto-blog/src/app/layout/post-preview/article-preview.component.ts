@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ArticlePreviewData} from "src/app/shared/model/article-preview-data";
+import {Web3Service} from "../../shared/service/web3.service";
 
 @Component({
   selector: 'app-post-preview',
@@ -12,10 +13,13 @@ export class ArticlePreviewComponent implements OnInit {
   articlePreview: ArticlePreviewData;
 
 
-  constructor() { }
+  constructor(private web3Service: Web3Service) { }
 
   ngOnInit(): void {
     console.log('articlePreview', this.articlePreview);
   }
 
+  convertToEth(price: number) {
+    return this.web3Service.getValueInEth(price);
+  }
 }

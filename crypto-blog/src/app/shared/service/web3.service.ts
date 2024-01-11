@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import {environment} from "../../../environments/environment";
+import {activate} from "@angular/fire/remote-config";
+import {AuthService} from "./auth.service";
+import {ethers} from "ethers";
 
 
 declare let window: any;
@@ -14,57 +17,51 @@ export class Web3Service {
 
   private web3Provider = 'http://localhost:8545';
 
-  constructor() {
-    this.checkAndInstantiateWeb3();
+  account: any;
+
+  constructor(private authService: AuthService) {
+    this.web3 = new Web3(this.web3Provider);
+
     this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
     console.log('this.contract', this.contract);
   }
 
-  private checkAndInstantiateWeb3() {
-    this.web3 = new Web3('http://localhost:8545');
-
-    /*    if (window.ethereum) {
-          this.web3 = new Web3('http://localhost:8545');
-          window.ethereum.enable();
-        }
-        else if (window.web3) {
-          this.web3 = new Web3(window.web3.currentProvider);
-        }
-        else {
-          throw new Error('Non-Ethereum browser detected. Please install MetaMask');
-        }*/
-  }
-
-  private getValueInWei(value){
+  getValueInWei(value){
     return Web3.utils.toWei(value, "ether");
   }
 
+  getValueInEth(value){
+    return Web3.utils.fromWei(value);
+  }
+
   public async createNewArticle(contentIpfsHash: string, previewContentIpfsHash: string, price: any, title: string) {
-    const accounts = await this.web3.eth.getAccounts();
-    return await this.contract.methods.createNewArticle(contentIpfsHash, previewContentIpfsHash, this.getValueInWei(price), title).send({ from: accounts[0] });
+    return await this.contract.methods.createNewArticle(contentIpfsHash, previewContentIpfsHash, this.getValueInWei(price), title).send({ from: this.authService.ethereum?.selectedAddress });
   }
 
   public async getOwnedArticles() {
-    const accounts = await this.web3.eth.getAccounts();
-    return await this.contract.methods.getOwnedArticles().call({ from: accounts[0] });
+    return await this.contract.methods.getOwnedArticles().call({ from: this.authService.ethereum?.selectedAddress });
   }
 
   public async getBoughtArticles() {
-    const accounts = await this.web3.eth.getAccounts();
-    return await this.contract.methods.getBoughtArticles().call({ from: accounts[0] });
+    return await this.contract.methods.getBoughtArticles().call({ from: this.authService.ethereum?.selectedAddress });
   }
 
   public async getArticles() {
     return await this.contract.methods.getArticles().call();
   }
 
-  public async buyArticle(articleId: number, price: number) {
-    const accounts = await this.web3.eth.getAccounts();
-    return await this.contract.methods.buyArticle(articleId).send({ from: accounts[0], value: price });
+  public async buyArticle(articleId: number, price: any) {
+    let confirmation = confirm("Are you sure you want to buy this article?");
+    event.preventDefault();
+    if(confirmation) {
+      console.log('by article')
+      return await this.contract.methods.buyArticle(articleId)
+        .send({from: this.authService.ethereum?.selectedAddress, value: price});
+
+    }
   }
 
   public async getArticle(articleId: number) {
-    const accounts = await this.web3.eth.getAccounts();
-    return await this.contract.methods.getArticle(articleId).call({ from: accounts[0] });
+    return await this.contract.methods.getArticle(articleId).call({ from: this.authService.ethereum?.selectedAddress });
   }
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostViewComponent } from 'src/app/layout/post-view/post-view.component';
+import { ArticleViewComponent } from 'src/app/layout/post-view/article-view.component';
 
 describe('PostViewComponent', () => {
-  let component: PostViewComponent;
-  let fixture: ComponentFixture<PostViewComponent>;
+  let component: ArticleViewComponent;
+  let fixture: ComponentFixture<ArticleViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PostViewComponent ]
+      declarations: [ ArticleViewComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PostViewComponent);
+    fixture = TestBed.createComponent(ArticleViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

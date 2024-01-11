@@ -1,17 +1,19 @@
 <nav id="topnav">
   <div style="width:80%">
-    <a id="logo" class="nav-link" href="#">Crypto Blog</a>
-    <a class="nav-link" href="#">Main</a>
-    <a class="nav-link" href="/post-create">Create article</a>
+    <a id="logo" class="nav-link">Crypto Blog</a>
+    <a class="nav-link" [routerLink]="'/'">Main</a>
+    <a class="nav-link" [routerLink]="'/post-create'">Create article</a>
   </div>
 
   <div style="width: 100%;">
     <div style="float:right;  display:flex;  flex-direction: column; align-items: flex-end;">
-        <a id="about" class="nav-link" *ngIf="!authService.isLoggedIn" (click)="signIn()">Sign in</a>
-      <section  *ngIf="authService.isLoggedIn"
+        <a id="about" class="nav-link" *ngIf="!(authService.signed | async)" (click)="signIn()">Sign in</a>
+      <section  *ngIf="authService.signed | async"
                 style="margin-right: 10px;  display:flex;  flex-direction: column; align-items: flex-end;">
         <a class="information">Your address: {{authService.ethereum?.selectedAddress}}</a>
-        <a class="information">Your balance: {{authService.balance | number: '1.0-6'}}</a>
+        <a class="information">Your balance: {{authService.balance | number: '1.0-6'}}
+          <a (click)="authService.logout()" href="#">Logout</a>
+        </a>
       </section>
     </div>
   </div>

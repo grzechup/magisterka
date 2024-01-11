@@ -20,6 +20,7 @@ export class IpfsService implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('this.ipfs', this.ipfs);
   }
 
   async fetchFromIPFS(cid) {

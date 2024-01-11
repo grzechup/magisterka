@@ -83,6 +83,11 @@ contract CryptoBlog {
         return toReturn;
       }
     }
+    for(uint i=0; i<articleOwners[msg.sender].length; i++){
+      if(articleOwners[msg.sender][i].articleId == articleId){
+        return toReturn;
+      }
+    }
     toReturn.ipfsHash = "";
     return toReturn;
   }

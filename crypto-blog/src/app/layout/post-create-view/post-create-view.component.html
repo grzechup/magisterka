@@ -1,15 +1,15 @@
 <div class="container">
   <div class="form">
-    <label for="title">Title</label>
+    <label for="title">Title of article</label>
     <input id="title" [(ngModel)]="title" >
 
-    <label for="text">Text</label>
+    <label for="text">Text of article</label>
     <textarea
       id="text"
       class="textarea"
       [(ngModel)]="text">
     </textarea>
-    <label for="price">Set price</label>
+    <label for="price">Set price of article</label>
     <input id="price" [(ngModel)]="price" >
     <button (click)="createArticle()">Create article</button>
   </div>

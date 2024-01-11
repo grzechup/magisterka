@@ -1,0 +1,21 @@
+<div class="article-container" *ngIf="dataLoaded | async">
+  <div class="article-header">
+    <div class="article-title">{{article.title}}</div>
+    <div class="article-meta">
+     <!-- <span>{{article.dateAdded | date}}</span>-->
+      <span>Autor: {{article.authorAddress}}</span>
+    </div>
+  </div>
+  <div *ngIf="!!article.fullText" class="article-content">
+    {{article.fullText}}
+  </div>
+  <div *ngIf="!article.fullText" >
+    <a href="#" (click)="buyArticle()">Buy article</a>
+
+  </div>
+    <div *ngIf="!article.fullText" class="article-content">
+      {{article.previewText}}...
+    </div>
+
+
+</div>

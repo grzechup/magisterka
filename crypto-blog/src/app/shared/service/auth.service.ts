@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Auth, signInWithCustomToken} from '@angular/fire/auth';
-import {from} from "rxjs";
+import {BehaviorSubject, from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
 import {switchMap, tap} from "rxjs/operators";
 import Web3 from "web3";
@@ -11,29 +11,29 @@ import {WEI} from "src/app/shared/util/globals";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService{
+export class AuthService {
 
 
   private _ethereum: any;
   private _web3: Web3;
   private _balance: number = 0;
+  signed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  isLoggedIn = false;
+  private readonly sessionStorageUserKey = 'ethUserCryptoBlog';
 
-
-  get ethereum(){
+  get ethereum() {
     return this._ethereum;
   }
 
-  get address(){
+  get address() {
     return this._ethereum.selectedAddress;
   }
 
-  get web3(){
+  get web3() {
     return this._web3;
   }
 
-  get balance(){
+  get balance() {
     return this._balance;
   }
 
@@ -82,12 +82,18 @@ export class AuthService{
           await signInWithCustomToken(this.auth, response.token)
       ),
       tap(() => {
-        this.isLoggedIn = true;
+        this.signed.next(true);
         this._web3 = new Web3(this.ethereum);
 
         this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
-          this._balance = <any> balance / WEI;
+          this._balance = <any>balance / WEI;
+          let user = {
+            address: this.ethereum.selectedAddress,
+            balance: this._balance
+          }
+          sessionStorage.setItem(this.sessionStorageUserKey, JSON.stringify(user));
         });
+
       })
     );
   }
@@ -100,5 +106,33 @@ export class AuthService{
   }
 
 
+/*  checkSession() {
+    let user = JSON.parse(sessionStorage.getItem(this.sessionStorageUserKey));
+    if (!!user) {
+      detectEthereumProvider().then(result => {
+        switchMap(async (provider) => {
+            if (!provider) {
+              throw new Error('Please install MetaMask');
+            }
+            this._ethereum = provider;
+            console.log(this._ethereum);
+            this.setAddress(user?.address);
 
+            this._web3.eth.getBalance(this.address).then(balance => {
+              this._balance = <any>balance / WEI;
+
+            });
+          }
+        )
+      });
+    }
+  }*/
+
+  logout() {
+    this._ethereum = null;
+    this._web3 = null;
+    this._balance = null;
+    this.signed.next(false);
+    sessionStorage.removeItem(this.sessionStorageUserKey)
+  }
 }
