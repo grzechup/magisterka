@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Auth, signInWithCustomToken} from '@angular/fire/auth';
-import {from} from "rxjs";
+import {BehaviorSubject, from} from "rxjs";
 import detectEthereumProvider from '@metamask/detect-provider';
 import {switchMap, tap} from "rxjs/operators";
 import Web3 from "web3";
-import {WEI} from "src/app/shared/globals";
+import {WEI} from "src/app/shared/util/globals";
 
 
 @Injectable({
@@ -17,34 +17,33 @@ export class AuthService {
   private _ethereum: any;
   private _web3: Web3;
   private _balance: number = 0;
+  signed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  isLoggedIn = false;
+  private readonly sessionStorageUserKey = 'ethUserCryptoBlog';
 
-
-  get ethereum(){
+  get ethereum() {
     return this._ethereum;
   }
 
-  get web3(){
+  get address() {
+    return this._ethereum.selectedAddress;
+  }
+
+  get web3() {
     return this._web3;
   }
 
-  get balance(){
+  get balance() {
     return this._balance;
   }
 
   constructor(private http: HttpClient,
               private auth: Auth) {
-
-
   }
 
 
   public signInWithMetaMask() {
-    console.log('signInWithMetaMask');
-
     return from(detectEthereumProvider()).pipe(
-      // Step 1: Request (limited) access to users ethereum account
       switchMap(async (provider) => {
         if (!provider) {
           throw new Error('Please install MetaMask');
@@ -53,13 +52,11 @@ export class AuthService {
         console.log(this._ethereum);
         return await this._ethereum.request({method: 'eth_requestAccounts'});
       }),
-      // Step 2: Retrieve the current nonce for the requested address
       switchMap(() =>
         this.http.get<any>(
           '/api/getNonceToSign/' + this._ethereum.selectedAddress
         )
       ),
-      // Step 3: Get the user to sign the nonce with their private key
       switchMap(
         async (response) =>
           await this._ethereum.request({
@@ -70,7 +67,6 @@ export class AuthService {
             ],
           })
       ),
-      // Step 4: If the signature is valid, retrieve a custom auth token for Firebase
       switchMap((sig) => {
           let httpParams = new HttpParams();
           httpParams = httpParams.set('address', this._ethereum.selectedAddress);
@@ -81,21 +77,24 @@ export class AuthService {
           )
         }
       ),
-      // Step 5: Use the auth token to auth with Firebase
       switchMap(
         async (response) =>
           await signInWithCustomToken(this.auth, response.token)
       ),
-      tap(response => {
-        this.isLoggedIn = true;
+      tap(() => {
+        this.signed.next(true);
         this._web3 = new Web3(this.ethereum);
 
         this._web3.eth.getBalance(this.ethereum.selectedAddress).then(balance => {
-          this._balance = <any> balance / WEI;
+          this._balance = <any>balance / WEI;
+          let user = {
+            address: this.ethereum.selectedAddress,
+            balance: this._balance
+          }
+          sessionStorage.setItem(this.sessionStorageUserKey, JSON.stringify(user));
         });
-        console.log('response of signing', response)
-      })
 
+      })
     );
   }
 
@@ -106,4 +105,34 @@ export class AuthService {
       .join('');
   }
 
+
+/*  checkSession() {
+    let user = JSON.parse(sessionStorage.getItem(this.sessionStorageUserKey));
+    if (!!user) {
+      detectEthereumProvider().then(result => {
+        switchMap(async (provider) => {
+            if (!provider) {
+              throw new Error('Please install MetaMask');
+            }
+            this._ethereum = provider;
+            console.log(this._ethereum);
+            this.setAddress(user?.address);
+
+            this._web3.eth.getBalance(this.address).then(balance => {
+              this._balance = <any>balance / WEI;
+
+            });
+          }
+        )
+      });
+    }
+  }*/
+
+  logout() {
+    this._ethereum = null;
+    this._web3 = null;
+    this._balance = null;
+    this.signed.next(false);
+    sessionStorage.removeItem(this.sessionStorageUserKey)
+  }
 }

@@ -1,8 +1,5 @@
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
-<app-post-preview></app-post-preview>
+<div class="grid-container" *ngIf="authService.signed |async">
+  <app-post-preview class="grid-item"
+                    *ngFor="let article of articles"
+                    [articlePreview]="article" ></app-post-preview>
+</div>

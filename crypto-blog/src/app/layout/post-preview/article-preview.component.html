@@ -1,0 +1,18 @@
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{articlePreview.title}}
+      <div class="access">
+    <a *ngIf="articlePreview.isOwned">It's your article!</a>
+    <a *ngIf="articlePreview.isBought">You have access to this article!</a>
+    <a *ngIf="!articlePreview.isBought && !articlePreview.isOwned">Article price: {{convertToEth(articlePreview.price)}} ETH</a>
+      </div>
+    </h5>
+    <p class="card-text">{{articlePreview.previewText}}...</p>
+    <a href="#" class="card-link" *ngIf="articlePreview.isBought || articlePreview.isOwned ; else previewLabel"
+       [routerLink]="'post'" [queryParams]="{id: articlePreview.articleId}">View full article</a>
+    <ng-template #previewLabel>
+      <a href="#" class="card-link" [routerLink]="'post'" [queryParams]="{id: articlePreview.articleId}" >View preview</a>
+    </ng-template>
+
+  </div>
+</div>

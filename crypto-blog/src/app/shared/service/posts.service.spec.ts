@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3Service } from './web3.service';
+import { IpfsService } from 'src/app/shared/service/ipfs.service';
 
-describe('Web3Service', () => {
-  let service: Web3Service;
+describe('PostsService', () => {
+  let service: IpfsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Web3Service);
+    service = TestBed.inject(IpfsService);
   });
 
   it('should be created', () => {

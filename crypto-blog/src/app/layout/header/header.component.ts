@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "src/app/shared/auth.service";
-import {Web3Service} from "src/app/shared/web3.service";
+import {AuthService} from "src/app/shared/service/auth.service";
+import {Web3Service} from "src/app/shared/service/web3.service";
 
 @Component({
   selector: 'app-header',
