@@ -128,6 +128,14 @@ export class AuthService {
     }
   }*/
 
+  refreshBalance(){
+    console.log('refreshBalance');
+    this._web3.eth.getBalance(this.address).then(balance => {
+      this._balance = <any>balance / WEI;
+      console.log('this.this._balance', this._balance);
+    });
+  }
+
   logout() {
     this._ethereum = null;
     this._web3 = null;

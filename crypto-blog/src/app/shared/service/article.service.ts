@@ -11,13 +11,23 @@ export class ArticleService{
               private web3Service: Web3Service) {
   }
 
-  createNewArticle(title, text, price){
-    this.ipfsService.uploadText(title, text, price).then((ipfsHashes: string[]) => {
+  async createNewArticle(title, text, price) {
+    try {
+      const ipfsHashes = await this.ipfsService.uploadText(title, text, price);
       console.log("ipfsHashes", ipfsHashes);
-      let creatingNewArticleResult = this.web3Service.createNewArticle(ipfsHashes[0], ipfsHashes[1], price, title);
+
+      const [ipfsHash0, ipfsHash1] = ipfsHashes;
+      const creatingNewArticleResult = await this.web3Service.createNewArticle(ipfsHash0, ipfsHash1, price, title);
       console.log('creatingNewArticleResult', creatingNewArticleResult);
-    }).catch(err => console.log(err));
+      console.log('res', creatingNewArticleResult);
+      alert("Article successfully added!")
+    } catch (err) {
+      alert("Error!")
+      console.error(err);
+    }
   }
+
+
 
   async getArticles(): Promise<ArticlePreviewData[]> {
     const articles: ArticlePreviewData[] = await this.web3Service.getArticles();

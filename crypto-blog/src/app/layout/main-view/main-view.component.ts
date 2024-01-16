@@ -35,6 +35,7 @@ export class MainViewComponent implements OnInit {
             });
           })
           .finally(() => {
+            this.articles = this.articles.reverse();
             console.log('articles after mapping ', this.articles);
           });
 

@@ -25,6 +25,13 @@ export class PostCreateViewComponent implements OnInit {
 
   createArticle() {
     console.log('address', this.authService.address)
-    this.articleService.createNewArticle(this.title, this.text, this.price);
+    this.articleService.createNewArticle(this.title, this.text, this.price)
+      .then(() => this.clearForm());
+  }
+
+  clearForm(){
+    this.text = "";
+    this.title = "";
+    this.price = 0;
   }
 }
