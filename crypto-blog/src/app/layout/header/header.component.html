@@ -11,7 +11,8 @@
       <section  *ngIf="authService.signed | async"
                 style="margin-right: 10px;  display:flex;  flex-direction: column; align-items: flex-end;">
         <a class="information">Your address: {{authService.ethereum?.selectedAddress}}</a>
-        <a class="information">Your balance: {{authService.balance | number: '1.0-6'}}
+      <!--  <a class="information">Your balance: {{authService.balance | number: '1.0-6'}}-->
+        <a class="information">
           <a (click)="authService.logout()" href="#">Logout</a>
         </a>
       </section>

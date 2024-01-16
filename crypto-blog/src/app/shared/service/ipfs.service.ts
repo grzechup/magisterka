@@ -53,7 +53,7 @@ export class IpfsService implements OnInit {
         }
 
         const previewAddedContent = await this.ipfs.add({content: JSON.stringify(previewArticleJson)});
-
+        console.log('previewAddedContent', previewAddedContent);
         let articleJson = {
           title: title,
           content: text,

@@ -54,7 +54,6 @@ export class Web3Service {
     let confirmation = confirm("Are you sure you want to buy this article?");
     event.preventDefault();
     if(confirmation) {
-      console.log('by article')
       return await this.contract.methods.buyArticle(articleId)
         .send({from: this.authService.ethereum?.selectedAddress, value: price});
 
